@@ -46,3 +46,8 @@ or
         <input type="submit" name="submit" value="Cloak" />
     </form>
 
+## Other Information
+
+You can tell if a user is cloaked by checking the "is_cloaked" attribute on the user object (this flag is set in the middleware).
+
+When determining if a user is allowed to cloak, the cloak view tries to call a `request.user.can_cloak_as(other_user)` method. If no such method is defined, the code falls back on the `request.user.is_admin` flag.
