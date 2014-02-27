@@ -11,13 +11,10 @@ setup(
     description="App for Django to cloak as a user, or generate a login link",
     packages=['cloak','cloak.management', 'cloak.management.commands'],
     zip_safe=False,
-    install_requires = [
+    install_requires=[
         'django',
     ],
-    classifiers = [
+    classifiers=[
         'Framework :: Django',
     ],
 )
-
-# remove the annoying egg-info directory setup creates
-rmtree("django_cloak.egg-info")
