@@ -80,7 +80,7 @@ def uncloak(request):
         pass # who cares
 
     # figure out where to redirect
-    next = request.POST.get(REDIRECT_FIELD_NAME, request.session.get(SESSION_REDIRECT_KEY))
-    if next is not None and is_safe_url(next, request.get_host()):
+    next = request.POST.get(REDIRECT_FIELD_NAME) or request.session.get(SESSION_REDIRECT_KEY)
+    if next and is_safe_url(next, request.get_host()):
         return HttpResponseRedirect(next)
     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
