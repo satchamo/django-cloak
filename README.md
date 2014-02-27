@@ -29,14 +29,14 @@ This will spit out a path you can append to your site's base URL, which will aut
 
 To cloak as a user, create a form that POSTs to the cloaking URL. The URL can either contain the PK of the user, or you can pass the PK as a POST parameter:
 
-    <form action="{% url 'cloak.cloak' user.pk %}">
+    <form method="post" action="{% url 'cloak' user.pk %}">
         {% csrf_token %}
         <input type="submit" name="submit" value="Cloak" />
     </form>
 
 or
 
-    <form action="{% url 'cloak.cloak' %}">
+    <form method="post" action="{% url 'cloak' %}">
         {% csrf_token %}
         <select name="pk">
             <option value="1">Matt</option>

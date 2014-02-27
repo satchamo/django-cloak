@@ -30,7 +30,7 @@ def login(request, signature):
 
     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
-@login_requied
+@login_required
 @require_POST
 def cloak(request, pk=None):
     """
@@ -55,7 +55,7 @@ def cloak(request, pk=None):
         except AttributeError as e:
             pass
 
-    if can_cloak:
+    if not can_cloak:
         return HttpResponseForbidden("You are not allowed to cloak as this user")
 
     request.session[SESSION_USER_KEY] = user.pk
@@ -81,6 +81,6 @@ def uncloak(request):
 
     # figure out where to redirect
     next = request.POST.get(REDIRECT_FIELD_NAME, request.session.get(SESSION_REDIRECT_KEY))
-    if next is not None and is_safe_url(next, request.request.get_host()):
+    if next is not None and is_safe_url(next, request.get_host()):
         return HttpResponseRedirect(next)
     return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
