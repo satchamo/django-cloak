@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.utils.http import is_safe_url
-from . import MAX_AGE_OF_SIGNATURE_IN_SECONDS, SESSION_USER_KEY, SESSION_REDIRECT_KEY
+from . import MAX_AGE_OF_SIGNATURE_IN_SECONDS, SESSION_USER_KEY, SESSION_REDIRECT_KEY, can_cloak_as
 
 # no permissions necessary since this only works for valid signatures
 def login(request, signature):
@@ -45,17 +45,8 @@ def cloak(request, pk=None):
         return HttpResponse("You need to pass a pk POST parameter, or include it in the URL")
 
     user = get_object_or_404(get_user_model(), pk=pk)
-    # check to see if the user is allowed to do this
-    can_cloak = False
-    try:
-        can_cloak = request.user.can_cloak_as(user)
-    except AttributeError as e:
-        try:
-            can_cloak = request.user.is_admin
-        except AttributeError as e:
-            pass
 
-    if not can_cloak:
+    if not can_cloak_as(request.user, user):
         return HttpResponseForbidden("You are not allowed to cloak as this user")
 
     request.session[SESSION_USER_KEY] = user.pk

@@ -1,5 +1,5 @@
-from django.contrib.auth import get_user_model 
-from . import SESSION_USER_KEY
+from django.contrib.auth import get_user_model
+from . import SESSION_USER_KEY, can_cloak_as
 
 class CloakMiddleware(object):
     """
@@ -10,7 +10,10 @@ class CloakMiddleware(object):
         request.user.is_cloaked = False
         if SESSION_USER_KEY in request.session:
             try:
-                request.user = get_user_model().objects.get(pk=request.session[SESSION_USER_KEY])
-                request.user.is_cloaked = True
+                user = get_user_model().objects.get(pk=request.session[SESSION_USER_KEY])
             except User.DoesNotExist:
-                pass
+                return None
+
+            if can_cloak_as(request.user, user):
+                request.user = user
+                request.user.is_cloaked = True
