@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="django-cloak",
-    version=__import__('cloak').__version__,
+    version="0.1.3",
     url='https://github.com/PSU-OIT-ARC/django-cloak',
     author='Matt Johnson',
     author_email='mdj2@pdx.edu',
