@@ -1,6 +1,6 @@
 from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth import get_user_model 
+from django.contrib.auth import get_user_model
 from django.core.signing import TimestampSigner
 from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldError

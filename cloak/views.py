@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import render
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.contrib.auth import get_user_model, login as django_login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
