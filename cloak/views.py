@@ -20,7 +20,7 @@ def login(request, signature):
     signer = TimestampSigner()
     try:
         pk = signer.unsign(signature, max_age=MAX_AGE_OF_SIGNATURE_IN_SECONDS)
-    except (signing.BadSignature, SignatureExpired) as e:
+    except (BadSignature, SignatureExpired) as e:
         return HttpResponseForbidden("Can't log you in")
 
     user = get_object_or_404(get_user_model(), pk=pk)
