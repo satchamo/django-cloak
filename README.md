@@ -1,5 +1,7 @@
 # django-cloak
 
+[![Build Status](https://travis-ci.org/PSU-OIT-ARC/django-cloak.svg?branch=master)](https://travis-ci.org/PSU-OIT-ARC/django-cloak)
+
 cloak is an app that allows administrative users to browse the site as a different user. It also includes a management command (`login`) to generate a login link for a particular user.
 
 ## Installation
@@ -24,6 +26,8 @@ where `user_identifier` is the value of the USERNAME_FIELD field of your user mo
 This will spit out a path you can append to your site's base URL, which will automatically log you in as that user.
 
 **Note**: The backend associated with the user (i.e. the value of `user.backend`) will be the first backend listed in AUTHENTICATION_BACKENDS.
+
+Without a user_identifier, the command will try to find a user with `is_superuser=True`, or `is_staff=True`, or any user, in that order.
 
 ### Templates
 
@@ -50,4 +54,4 @@ or
 
 You can tell if a user is cloaked by checking the "is_cloaked" attribute on the user object (this flag is set in the middleware).
 
-When determining if a user is allowed to cloak, the cloak view tries to call a `request.user.can_cloak_as(other_user)` method. If no such method is defined, the code falls back on the `request.user.is_admin` flag.
+When determining if a user is allowed to cloak, the cloak view tries to call a `request.user.can_cloak_as(other_user)` method. If no such method is defined, the code falls back on the `request.user.is_staff` flag.

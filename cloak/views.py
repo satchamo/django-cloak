@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import render
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.contrib.auth import get_user_model, login as django_login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
@@ -20,7 +19,7 @@ def login(request, signature):
     signer = TimestampSigner()
     try:
         pk = signer.unsign(signature, max_age=MAX_AGE_OF_SIGNATURE_IN_SECONDS)
-    except (signing.BadSignature, SignatureExpired) as e:
+    except (BadSignature, SignatureExpired) as e:
         return HttpResponseForbidden("Can't log you in")
 
     user = get_object_or_404(get_user_model(), pk=pk)

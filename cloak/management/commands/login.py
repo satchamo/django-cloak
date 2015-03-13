@@ -1,6 +1,6 @@
 from __future__ import print_function
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth import get_user_model 
+from django.contrib.auth import get_user_model
 from django.core.signing import TimestampSigner
 from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldError
@@ -12,8 +12,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """
-        With no arguments, find the first user in the system with the is_admin
-        flag set to true, or just the first user in the system period.
+        With no arguments, find the first user in the system with the
+        is_superuser or is_staff flag set to true, or just the first user in
+        the system period.
 
         With a single argument, look for the user with that value as the
         USERNAME_FIELD value.
@@ -24,12 +25,16 @@ class Command(BaseCommand):
         user_model = get_user_model()
 
         if len(args) == 0:
-            # find the first admin user, or the first user ordered by PK
-            try:
-                user_model.objects.filter(is_admin=True).order_by("pk").first()
-            except FieldError as e:
-                # now just try to get first user ordered by pk 
-                user = user_model.objects.all().order_by("pk").first()
+            # find the first superuser, or staff member or user
+            filters = [{"is_superuser": True}, {"is_staff": True}, {}]
+            user = None
+            for f in filters:
+                try:
+                    user = user_model._default_manager.filter(**f).order_by("pk").first()
+                    if user:
+                        break
+                except FieldError as e:
+                    pass
 
             if user is None:
                 raise CommandError("No users found!")
@@ -38,7 +43,7 @@ class Command(BaseCommand):
             # find the user with the USERNAME_FIELD equal to the command line
             # argument
             try:
-                user = user_model.objects.get_by_natural_key(args[0])
+                user = user_model._default_manager.get_by_natural_key(args[0])
             except user_model.DoesNotExist as e:
                 raise CommandError("The user does not exist")
         else:
@@ -47,4 +52,4 @@ class Command(BaseCommand):
         signer = TimestampSigner()
         signature = signer.sign(str(user.pk))
 
-        print(reverse(login, args=(signature,)))
+        self.stdout.write(reverse(login, args=(signature,)))
