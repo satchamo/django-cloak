@@ -1,5 +1,7 @@
 # django-cloak
 
+[![Build Status](https://travis-ci.org/PSU-OIT-ARC/django-cloak.svg?branch=master)](https://travis-ci.org/PSU-OIT-ARC/django-cloak)
+
 cloak is an app that allows administrative users to browse the site as a different user. It also includes a management command (`login`) to generate a login link for a particular user.
 
 ## Installation
