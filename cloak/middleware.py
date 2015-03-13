@@ -9,8 +9,9 @@ class CloakMiddleware(object):
     def process_request(self, request):
         request.user.is_cloaked = False
         if SESSION_USER_KEY in request.session:
+            User = get_user_model()
             try:
-                user = get_user_model().objects.get(pk=request.session[SESSION_USER_KEY])
+                user = User._default_manager.get(pk=request.session[SESSION_USER_KEY])
             except User.DoesNotExist:
                 return None
 

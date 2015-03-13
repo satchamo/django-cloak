@@ -25,6 +25,8 @@ This will spit out a path you can append to your site's base URL, which will aut
 
 **Note**: The backend associated with the user (i.e. the value of `user.backend`) will be the first backend listed in AUTHENTICATION_BACKENDS.
 
+Without a user_identifier, the command will try to find a user with `is_superuser=True`, or `is_staff=True`, or any user, in that order.
+
 ### Templates
 
 To cloak as a user, create a form that POSTs to the cloaking URL. The URL can either contain the PK of the user, or you can pass the PK as a POST parameter:
@@ -50,4 +52,4 @@ or
 
 You can tell if a user is cloaked by checking the "is_cloaked" attribute on the user object (this flag is set in the middleware).
 
-When determining if a user is allowed to cloak, the cloak view tries to call a `request.user.can_cloak_as(other_user)` method. If no such method is defined, the code falls back on the `request.user.is_admin` flag.
+When determining if a user is allowed to cloak, the cloak view tries to call a `request.user.can_cloak_as(other_user)` method. If no such method is defined, the code falls back on the `request.user.is_staff` flag.

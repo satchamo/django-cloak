@@ -12,7 +12,7 @@ def can_cloak_as(user, other_user):
         can_cloak = user.can_cloak_as(other_user)
     except AttributeError as e:
         try:
-            can_cloak = user.is_admin
+            can_cloak = user.is_staff
         except AttributeError as e:
             pass
 
