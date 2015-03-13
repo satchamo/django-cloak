@@ -1,2 +1,5 @@
 dist
 *.pyc
+.env2
+.env3
+django_cloak.egg-info/

@@ -52,4 +52,4 @@ class Command(BaseCommand):
         signer = TimestampSigner()
         signature = signer.sign(str(user.pk))
 
-        print(reverse(login, args=(signature,)))
+        self.stdout.write(reverse(login, args=(signature,)))
