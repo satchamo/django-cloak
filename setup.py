@@ -2,10 +2,6 @@
 import sys
 from setuptools import setup
 
-django_version = "django"
-if sys.version_info[0] < 3:
-    django_version += "<1.7"
-
 setup(
     name="django-cloak",
     version="1.0.0",
@@ -19,6 +15,6 @@ setup(
         'Framework :: Django',
     ],
     extras_require={
-        'test': ['model_mommy', 'mock', django_version],
+        'test': ['model_mommy', 'mock', 'django<1.9'],
     }
 )

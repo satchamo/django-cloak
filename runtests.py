@@ -28,18 +28,12 @@ settings.configure(
     SECRET_KEY="123",
 )
 
-if django.VERSION[:2] >= (1, 7):
-    from django import setup
-else:
-    setup = lambda: None
+from django.test.utils import get_runner
 
-from django.test.simple import DjangoTestSuiteRunner
-from django.test.utils import setup_test_environment
+django.setup()
 
-setup()
-setup_test_environment()
-test_runner = DjangoTestSuiteRunner(verbosity=1)
+TestRunner = get_runner(settings)
+test_runner = TestRunner(verbosity=1)
 
-failures = test_runner.run_tests(['cloak', ])
-if failures:
-    sys.exit(failures)
+failures = test_runner.run_tests(['cloak'])
+sys.exit(bool(failures))
