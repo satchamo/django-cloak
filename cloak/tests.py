@@ -164,6 +164,28 @@ class LoginManagementCommandTest(TestCase):
         # the first staffer by PK should be the one used
         self.assertRaises(CommandError, call_command, "login")
 
+    def test_email_is_used_first(self):
+        """
+        If an argument is specified, the user with the email field set to
+        that argument should be used first
+        """
+        # cloud the system with a dummy staff user
+        make(get_user_model(), is_staff=True)
+        # cloud with inactive user, since active accounts should be preferred
+        make(get_user_model(), email="foo@example.com", is_active=False)
+        # this is the user we actually want to use
+        user = make(get_user_model(), email="foo@example.com", is_active=True)
+        # cloud with inactive user, since active accounts should be preferred
+        make(get_user_model(), email="foo@example.com", is_active=False)
+        # cloud with a user who has a username with that email address
+        make(get_user_model(), username="foo@example.com")
+
+        stdout = tempfile.TemporaryFile(mode="w+")
+        call_command("login", user.email, stdout=stdout)
+        stdout.seek(0)
+        content = stdout.read()
+        self.assertIn("/cloak/login/%d" % user.pk, content)
+
     def test_username_field_is_used(self):
         """
         If an argument is specified, the user with the USERNAME_FIELD set to
@@ -190,7 +212,7 @@ class LoginViewTest(TestCase):
             response = self.client.get(reverse(login, args=[TimestampSigner().sign(str(user.pk))]), follow=False)
 
         self.assertRedirects(response, "/foo", target_status_code=404)
-        self.assertEqual(user.pk, self.client.session['_auth_user_id'])
+        self.assertEqual(user.pk, int(self.client.session['_auth_user_id']))
         self.assertEqual('django.contrib.auth.backends.ModelBackend', self.client.session['_auth_user_backend'])
 
     def test_bad_signature(self):

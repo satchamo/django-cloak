@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.signing import TimestampSigner
 from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldError
+from django.core.validators import validate_email
 from ...views import login
 
 class Command(BaseCommand):
@@ -40,12 +41,15 @@ class Command(BaseCommand):
                 raise CommandError("No users found!")
 
         elif len(args) == 1:
-            # find the user with the USERNAME_FIELD equal to the command line
+            # find the user with the email field or USERNAME_FIELD equal to the command line
             # argument
-            try:
-                user = user_model._default_manager.get_by_natural_key(args[0])
-            except user_model.DoesNotExist as e:
-                raise CommandError("The user does not exist")
+            key = args[0]
+            user = user_model._default_manager.filter(email=key).order_by("-is_active").first()
+            if not user:
+                try:
+                    user = user_model._default_manager.get_by_natural_key(key)
+                except user_model.DoesNotExist as e:
+                    raise CommandError("The user does not exist")
         else:
             raise CommandError("You passed me too many arguments")
 
