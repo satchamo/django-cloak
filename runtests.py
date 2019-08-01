@@ -17,10 +17,10 @@ settings.configure(
         'django.contrib.auth',
         'django.contrib.contenttypes',
         'django.contrib.sessions',
-        'django.contrib.admin',
+        #'django.contrib.admin',
         'cloak',
     ),
-    MIDDLEWARE_CLASSES=[
+    MIDDLEWARE=[
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'cloak.middleware.CloakMiddleware',

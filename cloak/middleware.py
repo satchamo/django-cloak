@@ -1,7 +1,13 @@
 from django.contrib.auth import get_user_model
 from . import SESSION_USER_KEY, can_cloak_as
+inherit_from = object
+try:
+    from django.utils.deprecation import MiddlewareMixin
+    inherit_from = MiddlewareMixin
+except ImportError:
+    pass
 
-class CloakMiddleware(object):
+class CloakMiddleware(inherit_from):
     """
     This middleware class checks to see if a cloak session variable is
     set, and overrides the request.user object with the cloaked user

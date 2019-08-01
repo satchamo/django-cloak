@@ -1,7 +1,7 @@
 from django.http import HttpResponse
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
-urlpatterns = patterns('',
+urlpatterns = [
     # we just need a dummy view to do something
     url(r'^cloak/', include('cloak.urls'))
-)
+]

@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseForbidden
+from django.shortcuts import redirect
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from django.contrib.auth import get_user_model, login as django_login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
@@ -27,7 +28,7 @@ def login(request, signature):
     user.backend = settings.AUTHENTICATION_BACKENDS[0]
     django_login(request, user)
 
-    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+    return redirect(settings.LOGIN_REDIRECT_URL)
 
 @login_required
 @require_POST
@@ -55,7 +56,7 @@ def cloak(request, pk=None):
 
     # redirect the cloaked user to the URL specified in the "next" parameter,
     # or to the default redirect URL
-    return HttpResponseRedirect(request.POST.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL))
+    return redirect(request.POST.get(REDIRECT_FIELD_NAME, settings.LOGIN_REDIRECT_URL))
 
 # no perms neccessary here
 @require_POST
@@ -72,5 +73,5 @@ def uncloak(request):
     # figure out where to redirect
     next = request.POST.get(REDIRECT_FIELD_NAME) or request.session.get(SESSION_REDIRECT_KEY)
     if next and is_safe_url(next, request.get_host()):
-        return HttpResponseRedirect(next)
-    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        return redirect(next)
+    return redirect(settings.LOGIN_REDIRECT_URL)

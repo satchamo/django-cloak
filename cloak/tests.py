@@ -8,7 +8,10 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
-from django.core.urlresolvers import reverse
+try:
+    from django.core.urlresolvers import reverse
+except ImportError:
+    from django.urls import reverse
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from . import SESSION_USER_KEY, can_cloak_as, SESSION_REDIRECT_KEY
@@ -181,7 +184,7 @@ class LoginManagementCommandTest(TestCase):
         make(get_user_model(), username="foo@example.com")
 
         stdout = tempfile.TemporaryFile(mode="w+")
-        call_command("login", user.email, stdout=stdout)
+        call_command("login", identifier=user.email, stdout=stdout)
         stdout.seek(0)
         content = stdout.read()
         self.assertIn("/cloak/login/%d" % user.pk, content)
@@ -196,7 +199,7 @@ class LoginManagementCommandTest(TestCase):
         # this is the user we actually want to use
         user = make(get_user_model())
         stdout = tempfile.TemporaryFile(mode="w+")
-        call_command("login", user.get_username(), stdout=stdout)
+        call_command("login", identifier=user.get_username(), stdout=stdout)
         stdout.seek(0)
         content = stdout.read()
         self.assertIn("/cloak/login/%d" % user.pk, content)

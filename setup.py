@@ -15,6 +15,6 @@ setup(
         'Framework :: Django',
     ],
     extras_require={
-        'test': ['model_mommy', 'mock', 'django<1.9'],
+        'test': ['model_mommy', 'mock', 'django'],
     }
 )
